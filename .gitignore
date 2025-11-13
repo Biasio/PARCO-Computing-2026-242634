@@ -1,0 +1,6 @@
+*.o
+*.exe
+*.log
+*.aux
+*.synctex.gz
+src/main
