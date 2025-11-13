@@ -4,7 +4,6 @@
 
 // PREPROCESSOR COSTANTs
 
-// Note max allowed size should note exceed int size, so ROWS*COLS<sizeof(int)
 #define LOGGING 1 //ON=1 OFF=0
 #define SPACING "%4d "  //Define the space of printf %*d
 
@@ -21,7 +20,7 @@
 */
 
 #define RAND_min 0  //min random range value
-#define RAND_max 5  //max random range value
+#define RAND_max 100  //max random range value
 
 
 // INCLUDED LIBRARIEs
