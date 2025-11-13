@@ -5,7 +5,7 @@
 // PREPROCESSOR COSTANTs
 
 #define LOGGING 1 //ON=1 OFF=0
-#define SPACING "%4d "  //Define the space of printf %*d
+#define SPACING "%4d "  //Define the spacing (%*d) of printf for matrix elements 
 
 #define RANDOMIZE_FILE 1 //ON=1 OFF=0
 #define SPARSITY 30   // Define level of sparsity in % for the write rand matrix to file function

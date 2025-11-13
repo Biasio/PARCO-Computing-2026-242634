@@ -242,11 +242,6 @@ CSR_MATRIX* MATRIX_to_CSR_converter(int** matrix_a, const int rows_a, const int 
 				}	
 			}
 		}
-		#if LOGGING
-		printf("\nFirst converting it to COO matrix format...\n");
-		print_matrix(COO_matrix_tmp, 3,cols_a);
-		printf("\n...Done\n");
-		#endif
 
 		//init of CSR matrix
 		if(k==0){
@@ -255,6 +250,12 @@ CSR_MATRIX* MATRIX_to_CSR_converter(int** matrix_a, const int rows_a, const int 
 		CSR_matrix=init_CSR_MATRIX( (rows_a + 1), k);
 		CSR_matrix->data[0][(k-1)]=k; //set the last indptr to nnz
 
+		#if LOGGING
+		printf("\nFirst converting it to COO matrix format...\n");
+		print_matrix(COO_matrix_tmp, 3, k);
+		printf("\n...Done\n");
+		#endif
+		
 		//copy the col and nz val array from tmp COO matrix
 		for(int c=0; c<k; ++c){
 			CSR_matrix->data[1][c] = COO_matrix_tmp[1][c];
