@@ -5,26 +5,19 @@
 // PREPROCESSOR COSTANTs
 
 #define LOGGING 1 //ON=1 OFF=0
-#define SPACING "%4d "  //Define the spacing (%*d) of printf for matrix elements 
+#define SPACING "%6d "  //Define the spacing (%*d) of printf for matrix elements 
 
-#define RANDOMIZE_FILE 1 //ON=1 OFF=0
-#define SPARSITY 30   // Define level of sparsity in % for the write rand matrix to file function
-
-#define ROWS_A 10
-#define COLS_A 10
+#define ROWS_A 200
+#define COLS_A 200
 #define ROWS_VEC COLS_A
-
-/*
-#define ROW_B 4
-#define COLS_B 1
-*/
 
 #define RAND_min 0  //min random range value
 #define RAND_max 100  //max random range value
 
 
 // INCLUDED LIBRARIEs
-
+#include <inttypes.h>
+#include <stdint.h>
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -68,6 +61,9 @@ CSR_MATRIX* init_rand_CSR_matrix(const int rows, const int cols);
 
 int* CSR_matrix_and_VEC_mult(CSR_MATRIX* CSR_matrix, int* vec);
 
-void WRITE_rand_MATRIX_to_file(FILE* file_ptr, int rows, int cols, const int sparsity);
+
+// MEASUREMENTS FUNCTIONS
+
+uint64_t time_nano();
 
 #endif

@@ -104,20 +104,14 @@ int** read_matrix(FILE* file_ptr, const int rows_a, const int cols_a) {
             if (fscanf(file_ptr, "%d", &matrix_a[i][j]) != 1) {
 
                 #if LOGGING
-                printf("\nWARNING: EOF reached, or character not recognized in position [%d][%d], before completing the matrix. Completing the rest with zeroes'''.\n", i, j);
+                printf("\nWARNING: EOF reached, or character not recognized in position [%d][%d]. Inserted a zero.\n", i, j);
                 #endif
                 
-                while (i<rows_a){
-					while(j<cols_a){
-						matrix_a[i][j]=0;
-						++j;
-					}
-					++i;
-				}
-
-				return matrix_a;
-                }
-            }
+				matrix_a[i][j]=0;
+			}
+		}
+		int c;
+        while ((c = fgetc(file_ptr)) != '\n' && c != EOF);
     }
     
     #if LOGGING
@@ -221,13 +215,12 @@ CSR_MATRIX* init_CSR_MATRIX (const int indptr_length, const int col_and_nz_lengt
 
 CSR_MATRIX* MATRIX_to_CSR_converter(int** matrix_a, const int rows_a, const int cols_a){
 
-		// Allocate a temporary CSR struct with the same COO length, that will be shrinked in size later into CSR_matrix
 		int k, curr_row;
 		
 		int** COO_matrix_tmp = NULL;
 		CSR_MATRIX* CSR_matrix = NULL;
 
-		//the max size ishould be as if the matrix has all nnz values
+		//the max size should be as if the matrix has all nnz values
 		COO_matrix_tmp = init_MATRIX(3, (rows_a*cols_a));
 		
 		// first fetch the matrix for nz values (COO format)
@@ -248,7 +241,7 @@ CSR_MATRIX* MATRIX_to_CSR_converter(int** matrix_a, const int rows_a, const int 
 			printf("\nERROR: conversion to CSR of an empty matrix is not permitted!\n");
 		}
 		CSR_matrix=init_CSR_MATRIX( (rows_a + 1), k);
-		CSR_matrix->data[0][(k-1)]=k; //set the last indptr to nnz
+		//CSR_matrix->data[0][(k-1)]=k; //set the last indptr to nnz
 
 		#if LOGGING
 		printf("\nFirst converting it to COO matrix format...\n");
@@ -268,14 +261,14 @@ CSR_MATRIX* MATRIX_to_CSR_converter(int** matrix_a, const int rows_a, const int 
 			CSR_matrix->data[0][curr_row] += 1;
 			
 		}
+		//clean the tmp matrix
+		clean_matrix(COO_matrix_tmp,3);
+		
 		// make the cumulative sum of elements
 		for(int p=1; p< (CSR_matrix->indptr_length); ++p){
 			CSR_matrix->data[0][p] += CSR_matrix->data[0][(p-1)];
 		}
 		
-		//clean the tmp matrix
-		clean_matrix(COO_matrix_tmp,3);
-
 		#if LOGGING
 		printf("\nConverting it to CSR matrix format...\n");
 		print_CSR_matrix(CSR_matrix);
@@ -336,36 +329,13 @@ int* CSR_matrix_and_VEC_mult(CSR_MATRIX* CSR_matrix, int* vec){
 	return result_vec;
 }
 
-void WRITE_rand_MATRIX_to_file(FILE* file_ptr, const int rows, const int cols, const int sparsity){
 
-	int value;
+uint64_t time_nano(){
+	struct timespec time_struct;
+	uint64_t time_now;
 
-	if (file_ptr == NULL) {
-		printf("ERROR: file stream pointer passed to \"WRITE_rand_MATRIX_to_file\" is NULL\n");
-		exit(1);
-	}
-
-	#if LOGGING
-	printf("\nWriting a rand MATRIX with sparsity %d to the specified file...\n", sparsity);
-	#endif
-	
-	for (int i = 0; i < rows; i++) {
-        for (int j = 0; j < cols; j++) {
-			if( (rand()%100) < sparsity	){
-				value = (rand() % (RAND_max - RAND_min + 1)) + RAND_min;
-			} else {
-				value = 0;
-			}
-			fprintf(file_ptr, "%d", value);
-			if (j!= (cols-1)) fprintf(file_ptr, " ");
-		}
-		if(i != (rows-1)) fprintf(file_ptr, "\n");
-	}
-	
-	#if LOGGING
-	printf("\n...Done\n");
-	#endif
-
-	fseek(file_ptr, 0, SEEK_SET);
-	return;
+    clock_gettime(CLOCK_MONOTONIC, &time_struct);
+	time_now = (uint64_t) (time_struct.tv_sec * ((long) (1000000000)) + time_struct.tv_nsec);
+    
+    return time_now;
 }
